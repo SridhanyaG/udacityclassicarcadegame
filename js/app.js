@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 let possibleYs = [230, 150, 60];
 let xUpperLimit = 400;
 let yUpperLimit = 400;
@@ -27,6 +29,7 @@ var Enemy = function(ypos) {
     this.y = possibleYs[ypos];
     this.col = 0;
     this.row = ypos + 2;
+    this.speed = Math.floor(Math.random() * 300);
 };
 
 // Update the enemy's position, required method for game
@@ -36,31 +39,39 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     if (this.x < xUpperLimit + 100 ) 
-      this.x = this.x + (100 * dt); 
+      this.x = this.x + (this.speed * dt); 
     else
       this.x = 0; 
-    this.computeColInfoBasedOnXY()
-    compareLocationWithEnemies()
+    this.computeColInfoBasedOnXY();
+    this.compareLocationWithPlayer();
+};
+
+Enemy.prototype.compareLocationWithPlayer = function () {
+  if (player.row === this.row && this.col === player.col) {
+    player.y = yUpperLimit;
+    player.incrementFailureCount();
+    player.row = 0;
+  }
 };
 
 // colspace is 100
 Enemy.prototype.computeColInfoBasedOnXY = function () {
   if (this.x > 0 && this.x <= 80) {
-      this.col = 0
-    };
+      this.col = 0;
+    }
     if (this.x > 80 && this.x <= 190) {
-      this.col = 1
-    };
+      this.col = 1;
+    }
     if (this.x > 190 && this.x <= 280) {
-      this.col = 2
-    };
+      this.col = 2;
+    }
     if (this.x > 280 && this.x <= 360) {
-      this.col = 3
-    };
+      this.col = 3;
+    }
     if (this.x > 360 && this.x <= 440) {
-      this.col = 4
-    };
-}
+      this.col = 4;
+    }
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -80,12 +91,12 @@ var Player = function (sprite, x, y, successAttempts, failureAttempts) {
   this.row = 0;
   this.col = 0;
   this.resetProcessing = false;
-}
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-allEnemies = []
+allEnemies = [];
 // creating a delay in enemies adding to the array
 window.setTimeout(function (self) {
   self.push(new Enemy(1)); 
@@ -111,7 +122,7 @@ Player.prototype.update = function(dt) {
       self.resetProcessing = false;
     }, 200, this);
   }
-}
+};
 
 Player.prototype.handleInput = function(key) {
   if (key == 'up' && this.y > yLowerLimit) {
@@ -130,7 +141,7 @@ Player.prototype.handleInput = function(key) {
         this.x = this.x - colspace;
         this.col += -1;
     }
-}
+};
 
 Player.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -139,36 +150,26 @@ Player.prototype.render = function() {
   ctx.fillText('Failed: ' + this.failureAttempts, 200, 90);
   ctx.fillText('Reserve: ' + this.totalAllowedAttempts, 0, 90);
   ctx.fillStyle = 'red';
-}
+};
 
 Player.prototype.incrementSuccessCount = function() {
   this.successAttempts++;
   this.totalAllowedAttempts -= 1;
   this.stopGameIfReserveIsEmpty();
-}
+};
 
 Player.prototype.incrementFailureCount = function() {
   this.failureAttempts++;
   this.totalAllowedAttempts -= 1;
   this.stopGameIfReserveIsEmpty();
-}
+};
 
 Player.prototype.stopGameIfReserveIsEmpty = function() {
   if (this.totalAllowedAttempts <= 0) {
-    allEnemies = []
+    allEnemies = [];
     document.removeEventListener('keyup', keyListenerFunction);
   }
-}
+};
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', keyListenerFunction);
-
-function compareLocationWithEnemies() {
-  for(let enemy of allEnemies) {
-    if (player.row === enemy.row && enemy.col === player.col) {
-      player.y = yUpperLimit;
-      player.incrementFailureCount()
-      player.row = 0
-    }
-  }
-}
