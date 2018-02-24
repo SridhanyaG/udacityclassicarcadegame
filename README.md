@@ -1,9 +1,11 @@
 # frontend-nanodegree-arcade-game
-
-1. use arrow keys to move the boy
-2. Total reserve is 5 attempts
-3. Every time u skip the bug and reach the water you get one success score. Reserve is decremented.
-4. When a bug bites failure score is increase. Reserve is decremented.
+1. run the index.html (open in a browser)
+2. Play the game by following below instructions.
+	1. use arrow keys to move the boy
+	2. Total reserve is 5 attempts
+	3. Every time u skip the bug and reach the water you get one success score. Reserve is decremented.
+	4. When a bug bites failure score is increase. Reserve is decremented.
+3. To reset the game please refresh the page in browser.
 
 ##Inputs form the project
 =======================
